@@ -1,4 +1,4 @@
-package com.kendanware.jme3.assetloader;
+package com.kendanware.jme3.taskloader;
 
 /**
  * @author Daniel Johansson

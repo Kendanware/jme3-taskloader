@@ -1,4 +1,4 @@
-package com.kendanware.jme3.assetloader;
+package com.kendanware.jme3.taskloader;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.jme3.app.Application;
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 /**
  * The LoadingManager is the brain of the async asset loading system. It will coordinate tasks for loading and create
- * the threads to consume the tasks. It will report any progress back to your code using a {@link com.kendanware.jme3.assetloader.ProgressCallback}.
+ * the threads to consume the tasks. It will report any progress back to your code using a {@link com.kendanware.jme3.taskloader.ProgressCallback}.
  *
  * @author Daniel Johansson
  * @since 2015-01-17
@@ -60,9 +60,9 @@ public class LoadingManager implements Consumer<LoadingTask> {
     }
 
     /**
-     * Registers a task for loading, it will be added to a queue and consumed by a {@link com.kendanware.jme3.assetloader.LoaderThread}.
+     * Registers a task for loading, it will be added to a queue and consumed by a {@link com.kendanware.jme3.taskloader.LoaderThread}.
      *
-     * @param loadingTask the task to register for loading. Hint: Can be a lambda as {@link com.kendanware.jme3.assetloader.LoadingTask} is a functional interface.
+     * @param loadingTask the task to register for loading. Hint: Can be a lambda as {@link com.kendanware.jme3.taskloader.LoadingTask} is a functional interface.
      */
     public void registerForLoading(final LoadingTask loadingTask) {
         loadingTasks.add(loadingTask);
@@ -70,18 +70,18 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     /**
      * Checks if all provided tasks have been loaded. This is used for determining task dependency. In order to use this
-     * in a meaningful way a {@link com.kendanware.jme3.assetloader.LoadingTask} need to be annotated with {@link com.kendanware.jme3.assetloader.Task}.
+     * in a meaningful way a {@link com.kendanware.jme3.taskloader.LoadingTask} need to be annotated with {@link com.kendanware.jme3.taskloader.Task}.
      *
      * @param dependencies an array of string identifiers for dependencies to check against. These are case sensitive.
      * @return true if all the provided dependencies have been loaded, otherwise false.
-     * @see com.kendanware.jme3.assetloader.Task
+     * @see com.kendanware.jme3.taskloader.Task
      */
     public boolean hasBeenLoaded(final String... dependencies) {
         return loadedTasks.containsAll(Arrays.asList(dependencies));
     }
 
     /**
-     * Takes the next task to be loaded out of the queue and returns it. This is mainly used for {@link com.kendanware.jme3.assetloader.LoadingTask}
+     * Takes the next task to be loaded out of the queue and returns it. This is mainly used for {@link com.kendanware.jme3.taskloader.LoadingTask}
      * to be able to poll for new tasks but can easily be used for implementing your own loading tasks.
      *
      * @return the next task in the queue to be loaded or null if there are no more tasks.

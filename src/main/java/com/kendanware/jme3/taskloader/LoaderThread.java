@@ -1,4 +1,4 @@
-package com.kendanware.jme3.assetloader;
+package com.kendanware.jme3.taskloader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

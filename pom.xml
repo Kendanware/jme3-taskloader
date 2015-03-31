@@ -8,6 +8,25 @@
     <artifactId>taskloader</artifactId>
     <version>0.1-SNAPSHOT</version>
 
+    <organization>Kendanware</organization>
+    <url>http://kendanware.com/</url>
+
+    <developers>
+        <developer>
+            <id>dannyjo</id>
+            <name>Daniel Johansson</name>
+            <organization>Kendanware</organization>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>BSD 3-Clause</name>
+            <distribution>repo</distribution>
+            <url>https://github.com/Kendanware/jme3-taskloader/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
     <properties>
         <jme3.version>3.0.10</jme3.version>
     </properties>

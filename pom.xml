@@ -7,9 +7,17 @@
     <groupId>com.kendanware.jme3</groupId>
     <artifactId>taskloader</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <url>https://github.com/Kendanware/jme3-taskloader</url>
 
-    <organization>Kendanware</organization>
-    <url>http://kendanware.com/</url>
+    <organization>
+        <name>Kendanware</name>
+        <url>http://kendanware.com/</url>
+    </organization>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/Kendanware/jme3-taskloader/issues</url>
+    </issueManagement>
 
     <developers>
         <developer>

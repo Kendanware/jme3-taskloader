@@ -98,9 +98,9 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * If this is called without any tasks having been registered a warning will be logged and loading will immediately be
      * set to complete.
      */
-    public void loadAssets() {
+    public void start() {
         if (loadingComplete) {
-            LOGGER.warn("Asked to load assets but loading has already been done, are you calling loadAssets() twice?");
+            LOGGER.warn("Asked to load assets but loading has already been done, are you calling start() twice?");
             return;
         }
 
@@ -150,10 +150,10 @@ public class LoadingManager implements Consumer<LoadingTask> {
     }
 
     /**
-     * Returns the time in nano seconds since loadAssets() was called, will return 0 if loadAssets() has not yet been called.
+     * Returns the time in nano seconds since start() was called, will return 0 if start() has not yet been called.
      * To check if loading has started you should use {@link #isLoadingStarted()}.
      *
-     * @return time in nano seconds since loadAssets() was called.
+     * @return time in nano seconds since start() was called.
      */
     public long getLoadingStartedAt() {
         return loadingStartedAt;
@@ -189,12 +189,12 @@ public class LoadingManager implements Consumer<LoadingTask> {
             loadedTasks.add(task.id());
         }
 
-        progress = (float) totalProgress.addAndGet(progressPerAsset);
-        progressCallback.progress(message, progress);
-
         if (loadingTasks.isEmpty() && progress > 0.98f && !loadingComplete) {
             loadingComplete = true;
             LOGGER.debug("Completed loading {} tasks in {} ms using {} threads", loadedTasks.size(), TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - loadingStartedAt), threads);
         }
+
+        progress = (float) totalProgress.addAndGet(progressPerAsset);
+        progressCallback.progress(message, loadingComplete, progress);
     }
 }

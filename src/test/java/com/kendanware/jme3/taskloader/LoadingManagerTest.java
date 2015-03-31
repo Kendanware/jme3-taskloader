@@ -46,7 +46,7 @@ public class LoadingManagerTest {
     public void accept_shouldCallProgressCallbackWithCorrectMessage() {
         loadingManager.accept(new LoadingTaskWithAnnotation());
 
-        verify(progressCallback).progress("Annotated Task", 0.0f);
+        verify(progressCallback).progress("Annotated Task", false, 0.0f);
     }
 
     private static class LoadingTaskWithoutAnnotation implements LoadingTask {

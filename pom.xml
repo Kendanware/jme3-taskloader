@@ -9,6 +9,13 @@
     <version>0.1-SNAPSHOT</version>
     <url>https://github.com/Kendanware/jme3-taskloader</url>
 
+    <scm>
+        <connection>scm:git:https://github.com/Kendanware/jme3-taskloader.git</connection>
+        <developerConnection>scm:git:git@github.com:Kendanware/jme3-taskloader.git</developerConnection>
+        <url>https://github.com/Kendanware/jme3-taskloader.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <organization>
         <name>Kendanware</name>
         <url>http://kendanware.com/</url>
@@ -87,6 +94,15 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -96,4 +112,11 @@
             <url>http://updates.jmonkeyengine.org/maven/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/kendanware/Maven/jme3-taskloader</url>
+        </repository>
+    </distributionManagement>
 </project>

@@ -12,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
+ * The LoadingManager is the brain of the async asset loading system. It will coordinate tasks for loading and create
+ * the threads to consume the tasks. It will report any progress back to your code using a {@link com.kendanware.jme3.assetloader.ProgressCallback}.
+ *
  * @author Daniel Johansson
  * @since 2015-01-17
  */
@@ -33,15 +36,27 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     /**
      * The LoadingManager is responsible for coordinating the loading work, starting threads and reporting back when loading
-     * completes.
+     * completes. This constructor will default the number threads to use to {@link Runtime#availableProcessors()}.
      *
-     * @param application the JME3 application class.
+     * @param application      the JME3 application class.
      * @param progressCallback a callback to call when loading progress changes.
      */
     public LoadingManager(final Application application, final ProgressCallback progressCallback) {
+        this(application, Runtime.getRuntime().availableProcessors(), progressCallback);
+    }
+
+    /**
+     * The LoadingManager is responsible for coordinating the loading work, starting threads and reporting back when loading
+     * completes.
+     *
+     * @param application      the JME3 application class.
+     * @param numberOfThreads  number of threads to use for consuming the task queue.
+     * @param progressCallback a callback to call when loading progress changes.
+     */
+    public LoadingManager(final Application application, final int numberOfThreads, final ProgressCallback progressCallback) {
         this.application = application;
         this.progressCallback = progressCallback;
-        this.threads = Runtime.getRuntime().availableProcessors();
+        this.threads = numberOfThreads;
     }
 
     /**
@@ -57,9 +72,9 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * Checks if all provided tasks have been loaded. This is used for determining task dependency. In order to use this
      * in a meaningful way a {@link com.kendanware.jme3.assetloader.LoadingTask} need to be annotated with {@link com.kendanware.jme3.assetloader.Task}.
      *
-     * @see com.kendanware.jme3.assetloader.Task
      * @param dependencies an array of string identifiers for dependencies to check against. These are case sensitive.
      * @return true if all the provided dependencies have been loaded, otherwise false.
+     * @see com.kendanware.jme3.assetloader.Task
      */
     public boolean hasBeenLoaded(final String... dependencies) {
         return loadedTasks.containsAll(Arrays.asList(dependencies));
@@ -77,9 +92,9 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     /**
      * Tell the loader to start loading assets that have been registered using {@link #registerForLoading(LoadingTask)}.
-     * <p>
+     * <p/>
      * If this is called multiple times subsequent calls will be ignored and a warning logged.
-     * <p>
+     * <p/>
      * If this is called without any tasks having been registered a warning will be logged and loading will immediately be
      * set to complete.
      */

@@ -1,5 +1,6 @@
 package com.kendanware.jme3.taskloader;
 
+import com.kendanware.jme3.taskloader.annotation.DependsOn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +26,11 @@ public class LoaderThread implements Runnable {
         LoadingTask loadingTask;
 
         while ((loadingTask = loadingManager.getNextTask()) != null) {
-            final Task task = loadingTask.getClass().getAnnotation(Task.class);
+            final DependsOn dependsOn = loadingTask.getClass().getAnnotation(DependsOn.class);
 
             // If this loading task has an annotation and indicates it depends on something, lets put the task back
             // on the queue and try another task instead.
-            if (task != null && task.dependsOn().length > 0 && !loadingManager.hasBeenLoaded(task.dependsOn())) {
+            if (dependsOn != null && dependsOn.value().length > 0 && !loadingManager.hasBeenLoaded(dependsOn.value())) {
                 loadingManager.registerForLoading(loadingTask);
                 continue;
             }
@@ -38,6 +39,7 @@ public class LoaderThread implements Runnable {
                 loadingTask.load(loadingManager.getApplication());
             } catch (Exception e) {
                 LOGGER.error("Exception caught during loading", e);
+                loadingManager.getApplication().stop();
             } finally {
                 loadingTaskCompletedCallback.accept(loadingTask);
             }

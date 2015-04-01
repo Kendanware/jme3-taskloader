@@ -1,6 +1,8 @@
 package com.kendanware.jme3.taskloader;
 
 import com.jme3.app.Application;
+import com.jme3.asset.AssetNotFoundException;
+import com.kendanware.jme3.taskloader.annotation.DependsOn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +65,14 @@ public class LoaderThreadTest {
         verify(loadingManager, times(3)).getNextTask();
     }
 
-    @Task(id = "taskWithoutDependency")
+    @Test
+    public void run_shouldCallApplicationStop_whenExceptionOccursDuringLoadingTaskLoad() {
+        when(loadingManager.getNextTask()).thenReturn(loadingTask).thenReturn(null);
+        doThrow(new AssetNotFoundException("")).when(loadingTask).load(application);
+        loaderThread.run();
+        verify(application).stop();
+    }
+
     private static class LoadingTaskWithoutDependency implements LoadingTask {
 
         @Override
@@ -72,7 +81,7 @@ public class LoaderThreadTest {
         }
     }
 
-    @Task(id = "taskWithDependency", dependsOn = "taskWithoutDependency")
+    @DependsOn(LoadingTaskWithoutDependency.class)
     private static class LoadingTaskWithDependency implements LoadingTask {
 
         @Override

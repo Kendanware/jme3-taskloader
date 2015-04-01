@@ -1,4 +1,6 @@
-package com.kendanware.jme3.taskloader;
+package com.kendanware.jme3.taskloader.annotation;
+
+import com.kendanware.jme3.taskloader.LoadingTask;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,12 +15,11 @@ import java.lang.annotation.Target;
  * SecondLoadingTask is picked up first by the loading system, it will be put back on the queue until FirstLoadingTask
  * has been registered as complete.
  * <pre>
- *     {@literal @}Task(id = "first")
  *     public class FirstLoadingTask implements LoadingTask {
  *         // Implementation left out.
  *     }
  *
- *     {@literal @}Task(id = "second", dependsOn = "first")
+ *     {@literal @}DependsOn(FirstLoadingTask.class)
  *     public class SecondLoadingTask implements LoadingTask {
  *         // Implementation left out.
  *     }
@@ -29,11 +30,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Task {
+public @interface DependsOn {
 
-    String id();
-
-    String[] dependsOn() default {};
-
-    String description() default "";
+    Class<? extends LoadingTask>[] value() default {};
 }

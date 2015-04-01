@@ -2,10 +2,10 @@ package com.kendanware.jme3.taskloader;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.jme3.app.Application;
+import com.kendanware.jme3.taskloader.annotation.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
     private long loadingStartedAt;
     private final ProgressCallback progressCallback;
     private float progress;
-    private Queue<String> loadedTasks = new ConcurrentLinkedQueue<>();
+    private Queue<Class<? extends LoadingTask>> loadedTasks = new ConcurrentLinkedQueue<>();
     private final AtomicDouble totalProgress = new AtomicDouble();
     private double progressPerAsset;
 
@@ -70,14 +70,20 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     /**
      * Checks if all provided tasks have been loaded. This is used for determining task dependency. In order to use this
-     * in a meaningful way a {@link com.kendanware.jme3.taskloader.LoadingTask} need to be annotated with {@link com.kendanware.jme3.taskloader.Task}.
+     * in a meaningful way a {@link com.kendanware.jme3.taskloader.LoadingTask} need to be annotated with {@link com.kendanware.jme3.taskloader.annotation.DependsOn}.
      *
      * @param dependencies an array of string identifiers for dependencies to check against. These are case sensitive.
      * @return true if all the provided dependencies have been loaded, otherwise false.
-     * @see com.kendanware.jme3.taskloader.Task
+     * @see com.kendanware.jme3.taskloader.annotation.DependsOn
      */
-    public boolean hasBeenLoaded(final String... dependencies) {
-        return loadedTasks.containsAll(Arrays.asList(dependencies));
+    public boolean hasBeenLoaded(final Class<? extends LoadingTask>... dependencies) {
+        for (final Class<? extends LoadingTask> loadingTaskClass : dependencies) {
+            if (!loadedTasks.contains(loadingTaskClass)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -107,7 +113,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
         if (loadingTasks.isEmpty()) {
             LOGGER.warn("Asked to load assets but none have been registered for loading, have you called registerForLoading() with a task?");
             loadingComplete = true;
-            totalProgress.set(1.0);
+            progress = 1.0f;
             return;
         }
 
@@ -179,19 +185,19 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     @Override
     public void accept(final LoadingTask loadingTask) {
-        final Task task = loadingTask.getClass().getAnnotation(Task.class);
-        String message = "";
-
-        if (task == null) {
-            loadedTasks.add(loadingTask.getClass().getName());
-        } else {
-            message = task.description();
-            loadedTasks.add(task.id());
-        }
+        // Add this loading task to the list of loaded tasks.
+        loadedTasks.add(loadingTask.getClass());
 
         if (loadingTasks.isEmpty() && progress > 0.98f && !loadingComplete) {
             loadingComplete = true;
             LOGGER.debug("Completed loading {} tasks in {} ms using {} threads", loadedTasks.size(), TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - loadingStartedAt), threads);
+        }
+
+        String message = "";
+        final Description description = loadingTask.getClass().getAnnotation(Description.class);
+
+        if (description != null) {
+            message = description.value();
         }
 
         progress = (float) totalProgress.addAndGet(progressPerAsset);

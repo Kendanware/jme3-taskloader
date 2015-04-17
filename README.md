@@ -80,7 +80,9 @@ You will need to configure a repository in your pom.xml first.
     <repository>
         <id>oss-libs-snapshots</id>
         <url>http://oss.jfrog.org/artifactory/libs-snapshot/</url>
-        <snapshots>true</snapshots>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
     </repository>
 
     <dependency>

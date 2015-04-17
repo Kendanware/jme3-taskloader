@@ -73,12 +73,18 @@ public class LoadingAppState extends AbstractAppState implements ProgressCallbac
 You will need to configure a repository in your pom.xml first.
 
     <repository>
-        <id>kendanware</id>
-        <url></url>
+        <id>oss-libs-release</id>
+        <url>http://oss.jfrog.org/artifactory/libs-release/</url>
+    </repository>
+
+    <repository>
+        <id>oss-libs-snapshots</id>
+        <url>http://oss.jfrog.org/artifactory/libs-snapshot/</url>
+        <snapshots>true</snapshots>
     </repository>
 
     <dependency>
         <groupId>com.kendanware.jme3</groupId>
         <artifactId>taskloader</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>${jme3taskloader.version}</version>
     </dependency>

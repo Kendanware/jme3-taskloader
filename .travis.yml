@@ -2,3 +2,12 @@ language: java
 
 jdk:
   - oraclejdk8
+
+after_success:
+  - echo "<settings><servers><server><id>oss-jfrog-artifactory</id><username>\${env.BINTRAY_USER}</username><password>\${env.BINTRAY_KEY}</password></server></servers></settings>" > ~/settings.xml
+  - mvn deploy --settings ~/settings.xml
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change

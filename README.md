@@ -1,6 +1,8 @@
 jMonkeyEngine Task Loader [![Build Status](https://travis-ci.org/Kendanware/jme3-taskloader.svg?branch=master)](https://travis-ci.org/Kendanware/jme3-taskloader)
 ==========================
 
+__Requires JDK 1.8__
+
 The task loader provides a mechanism for performing tasks and hooking up a callback to potentially render a loading screen.
 
 - - -
@@ -89,6 +91,55 @@ if you decide to only use one thread for loading the tasks they are still execut
 thread in JME. In order to talk nicely to the rendering thread you will have to ensure that any code as described by
 the JME threading model document is executed through a Callable on the rendering thread. See
 [jMonkeyEngine Wiki - Multi Threading](http://wiki.jmonkeyengine.org/doku.php/jme3:advanced:multithreading) for more information.
+
+Below is a simple task which loads a model and sets it's local translation to 10, 0, 10 and then uses the application.enqueue
+method to attach it to it's parent node. How this task is provided the parentNode is up to you of course, feel free to have
+a play.
+
+```java
+public class MyLoadingTask implements LoadingTask {
+
+    private final Node parentNode;
+
+    public MyLoadingTask(final Node parentNode) {
+        this.parentNode = parentNode;
+    }
+
+    @Override
+    public void load(final Application application) {
+        final Spatial model = application.getAssetManager().loadModel("Models/some-model.j3o");
+        model.setLocalTranslation(10, 0, 10);
+
+        application.enqueue(() -> {
+            parentNode.attachChild(model);
+            return null;
+        });
+    }
+}
+```
+
+## Loading Task Dependencies (@DependsOn)
+
+There might be situations where you are trying to load something and you realise it depends on something else which is also
+in the loading pipeline. This is where the @DependsOn annotation comes in. Simply add it to the task which needs to wait on
+another task and tell it which task(s) it should wait for.
+
+Bare in mind that it will only wait for the other task(s) to complete not the application.enqueue calls that might have been
+issued during their execution.
+
+```java
+@DependsOn(MyLoadingTask.class)
+public DependentLoadingTask implements LoadingTask {
+
+    @Override
+    public void load(final Application application) {
+        // Implementation omitted, you have to come up with this part.
+    }
+}
+```
+
+A LoadingTask can depend on __multiple__ tasks but be careful not to create a situation where there is a chain which can
+never be fulfilled.
 
 - - - 
 

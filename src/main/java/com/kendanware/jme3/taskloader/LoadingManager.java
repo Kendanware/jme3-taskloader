@@ -54,6 +54,10 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * @param progressCallback a callback to call when loading progress changes.
      */
     public LoadingManager(final Application application, final int numberOfThreads, final ProgressCallback progressCallback) {
+        if (progressCallback == null) {
+            throw new IllegalArgumentException("progressCallback is required");
+        }
+
         this.application = application;
         this.progressCallback = progressCallback;
         this.threads = numberOfThreads;

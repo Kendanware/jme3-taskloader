@@ -30,7 +30,7 @@ public class LoaderThread implements Runnable {
 
             // If this loading task has an annotation and indicates it depends on something, lets put the task back
             // on the queue and try another task instead.
-            if (dependsOn != null && dependsOn.value().length > 0 && !loadingManager.hasBeenLoaded(dependsOn.value())) {
+            if (dependsOn != null && !loadingManager.hasBeenLoaded(dependsOn.value())) {
                 loadingManager.registerForLoading(loadingTask);
                 continue;
             }

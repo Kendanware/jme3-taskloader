@@ -68,6 +68,16 @@ public class LoadingAppState extends AbstractAppState implements ProgressCallbac
 
 - - -
 
+# LoadingManager
+
+This is the heart of the loading process. It takes care of creating the worker threads and is where you will register the
+tasks you want performed and it will let you know when tasks complete. The constructor of LoadingManager requires that you
+provide it with a reference to the JME application and a progress callback. Optionally you can also provide a value for
+the number of threads you would like it to use for running your loading tasks. By default this will be set to the available
+amount of processors as determined by the Java runtime so if you have a quad core CPU it's likely to create 4 threads.
+
+- - -
+
 # Loading Tasks
 
 A loading task is defined as a small unit of isolated work that needs to be performed. This means that usually your tasks

@@ -59,6 +59,11 @@ public class LoadingManagerTest {
         assertThat(loadingManager.getProgressPercentage()).isEqualTo(100.0f);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void constructingLoadingManagershouldThrowIllegalArgumentException_whenProgressCallbackIsNull() {
+        new LoadingManager(application, null);
+    }
+
     private static class LoadingTaskWithoutAnnotation implements LoadingTask {
 
         @Override

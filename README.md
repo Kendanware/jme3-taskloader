@@ -1,7 +1,7 @@
 jMonkeyEngine Task Loader [![Build Status](https://travis-ci.org/Kendanware/jme3-taskloader.svg?branch=master)](https://travis-ci.org/Kendanware/jme3-taskloader)
 ==========================
 
-__Requires JDK 1.8__
+__Requires JDK 1.8 or newer__
 
 The task loader provides a mechanism for performing tasks and hooking up a callback to potentially render a loading screen.
 

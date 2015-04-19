@@ -66,12 +66,27 @@ public class LoadingAppState extends AbstractAppState implements ProgressCallbac
 }
 ```
 
+- - -
+
+# Loading Tasks
+
+A loading task is defined as a small unit of isolated work that needs to be performed. This means that usually your tasks
+will be really short in lines of code. Perhaps it will load an asset like a model and setup a couple of extra attributes
+on it. Perhaps the task will load your game world. Perhaps it will initialise your post-process filters. The list goes on.
+
+Remember that the task loading is fully asynchronous, this means that loading tasks will executed on their own thread. Even
+if you decide to only use one thread for loading the tasks they are still executed asynchronously to the main rendering
+thread in JME. In order to talk nicely to the rendering thread you will have to ensure that any code as described by
+the JME threading model document is executed through a Callable on the rendering thread. See
+[jMonkeyEngine Wiki - Multi Threading](http://wiki.jmonkeyengine.org/doku.php/jme3:advanced:multithreading) for more information.
+
 - - - 
 
 # Maven
 
-You will need to configure a repository in your pom.xml first.
+This should speak for itself.
 
+```xml
     <repository>
         <id>oss-libs-release</id>
         <url>http://oss.jfrog.org/artifactory/libs-release/</url>
@@ -90,3 +105,4 @@ You will need to configure a repository in your pom.xml first.
         <artifactId>taskloader</artifactId>
         <version>${jme3taskloader.version}</version>
     </dependency>
+```

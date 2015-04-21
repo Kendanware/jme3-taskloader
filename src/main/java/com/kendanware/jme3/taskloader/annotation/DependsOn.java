@@ -10,10 +10,11 @@ import java.lang.annotation.Target;
 /**
  * Annotation for declaring more information about a {@link com.kendanware.jme3.taskloader.LoadingTask}. This is mainly
  * used for when a task should be dependent on another task.
- * <p/>
+ * <p>
  * Using the following simple example you can see that SecondLoadingTask is dependent on FirstLoadingTask so even if
  * SecondLoadingTask is picked up first by the loading system, it will be put back on the queue until FirstLoadingTask
  * has been registered as complete.
+ * </p>
  * <pre>
  *     public class FirstLoadingTask implements LoadingTask {
  *         // Implementation left out.

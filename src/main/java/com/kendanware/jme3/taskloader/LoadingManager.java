@@ -102,11 +102,13 @@ public class LoadingManager implements Consumer<LoadingTask> {
 
     /**
      * Tell the loader to start loading assets that have been registered using {@link #registerForLoading(LoadingTask)}.
-     * <p/>
+     * <p>
      * If this is called multiple times subsequent calls will be ignored and a warning logged.
-     * <p/>
+     * </p>
+     * <p>
      * If this is called without any tasks having been registered a warning will be logged and loading will immediately be
      * set to complete.
+     * </p>
      */
     public void start() {
         if (loadingComplete) {

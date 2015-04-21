@@ -112,6 +112,11 @@
     </repositories>
 
     <distributionManagement>
+        <repository>
+            <id>oss-jfrog-artifactory</id>
+            <name>oss-jfrog-artifactory-releases</name>
+            <url>http://oss.jfrog.org/artifactory/oss-release-local</url>
+        </repository>
         <snapshotRepository>
             <id>oss-jfrog-artifactory</id>
             <name>oss-jfrog-artifactory-snapshots</name>

@@ -4,6 +4,7 @@ import com.kendanware.jme3.taskloader.annotation.DependsOn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -32,15 +33,18 @@ public class LoaderThread implements Runnable {
             // on the queue and try another task instead.
             if (dependsOn != null && !loadingManager.hasBeenLoaded(dependsOn.value())) {
                 loadingManager.registerForLoading(loadingTask);
+                LOGGER.trace("{} depends on {}, adding this task back into the queue", loadingTask.getClass().getSimpleName(), Arrays.toString(dependsOn.value()));
                 continue;
             }
 
             try {
+                LOGGER.trace("Loading task {}", loadingTask.getClass().getSimpleName());
                 loadingTask.load(loadingManager.getApplication());
             } catch (Exception e) {
                 LOGGER.error("Exception caught during loading", e);
                 loadingManager.getApplication().stop();
             } finally {
+                LOGGER.trace("Loaded task {}", loadingTask.getClass().getSimpleName());
                 loadingTaskCompletedCallback.accept(loadingTask);
             }
         }

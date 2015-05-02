@@ -33,6 +33,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
     private Queue<Class<? extends LoadingTask>> loadedTasks = new ConcurrentLinkedQueue<>();
     private final AtomicDouble totalProgress = new AtomicDouble();
     private double progressPerAsset;
+    private int tasksToLoad;
 
     /**
      * The LoadingManager is responsible for coordinating the loading work, starting threads and reporting back when loading
@@ -126,15 +127,15 @@ public class LoadingManager implements Consumer<LoadingTask> {
         loadingStarted = true;
         loadingStartedAt = System.nanoTime();
 
-        LOGGER.debug("Running Loading Tasks");
-        progressPerAsset = 1.0f / loadingTasks.size();
+        tasksToLoad = loadingTasks.size();
+        progressPerAsset = 1.0f / tasksToLoad;
 
         // Fire up threads to load stuff
         for (int i = 0; i < threads; i++) {
             final LoaderThread loaderThread = new LoaderThread(this, this);
-            LOGGER.debug("Created LoaderThread {}/{}", i + 1, threads);
+            LOGGER.debug("Created LoaderThread {} of {}", i + 1, threads);
 
-            final Thread thread = new Thread(loaderThread);
+            final Thread thread = new Thread(loaderThread, "LoaderThread " + i);
             thread.start();
         }
     }
@@ -144,7 +145,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
     }
 
     /**
-     * Returns the current progress as a value between 0.0 and 1.0 where 1.0 is max prgoress.
+     * Returns the current progress as a value between 0.0 and 1.0 where 1.0 is max progress.
      *
      * @return a value between 0.0 and 1.0
      */
@@ -193,8 +194,11 @@ public class LoadingManager implements Consumer<LoadingTask> {
     public void accept(final LoadingTask loadingTask) {
         // Add this loading task to the list of loaded tasks.
         loadedTasks.add(loadingTask.getClass());
+        LOGGER.debug("Added task {} to list of loaded tasks", loadingTask.getClass().getSimpleName());
 
-        if (loadingTasks.isEmpty() && progress > 0.98f && !loadingComplete) {
+        LOGGER.debug("Loaded tasks: {}, tasks to load: {}", loadedTasks.size(), tasksToLoad);
+
+        if (loadingTasks.isEmpty() && loadedTasks.size() == tasksToLoad && !loadingComplete) {
             loadingComplete = true;
             LOGGER.debug("Completed loading {} tasks in {} ms using {} threads", loadedTasks.size(), TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - loadingStartedAt), threads);
         }

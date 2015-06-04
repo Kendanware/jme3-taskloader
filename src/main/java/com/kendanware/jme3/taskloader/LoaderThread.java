@@ -42,7 +42,7 @@ public class LoaderThread implements Runnable {
                 loadingTask.load(loadingManager.getApplication());
             } catch (Exception e) {
                 LOGGER.error("Exception caught during loading", e);
-                loadingManager.getApplication().stop();
+                loadingManager.getApplication().handleError(e.getLocalizedMessage(), e);
             } finally {
                 LOGGER.trace("Loaded task {}", loadingTask.getClass().getSimpleName());
                 loadingTaskCompletedCallback.accept(loadingTask);

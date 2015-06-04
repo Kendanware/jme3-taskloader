@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.function.Consumer;
@@ -70,7 +71,7 @@ public class LoaderThreadTest {
         when(loadingManager.getNextTask()).thenReturn(loadingTask).thenReturn(null);
         doThrow(new AssetNotFoundException("")).when(loadingTask).load(application);
         loaderThread.run();
-        verify(application).stop();
+        verify(application).handleError(Mockito.anyString(), Mockito.any(Throwable.class));
     }
 
     private static class LoadingTaskWithoutDependency implements LoadingTask {

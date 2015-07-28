@@ -18,11 +18,11 @@ import java.util.function.Consumer;
  * @author Daniel Johansson
  * @since 2015-01-17
  */
-public class LoadingManager implements Consumer<LoadingTask> {
+public class LoadingManager<T extends Application> implements Consumer<LoadingTask> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadingManager.class);
 
-    private final Application application;
+    private final T application;
     private final Queue<LoadingTask> loadingTasks = new ConcurrentLinkedQueue<>();
     private final int threads;
     private boolean loadingStarted = false;
@@ -42,7 +42,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * @param application      the JME3 application class.
      * @param progressCallback a callback to call when loading progress changes.
      */
-    public LoadingManager(final Application application, final ProgressCallback progressCallback) {
+    public LoadingManager(final T application, final ProgressCallback progressCallback) {
         this(application, Runtime.getRuntime().availableProcessors(), progressCallback);
     }
 
@@ -54,7 +54,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * @param numberOfThreads  number of threads to use for consuming the task queue.
      * @param progressCallback a callback to call when loading progress changes.
      */
-    public LoadingManager(final Application application, final int numberOfThreads, final ProgressCallback progressCallback) {
+    public LoadingManager(final T application, final int numberOfThreads, final ProgressCallback progressCallback) {
         if (progressCallback == null) {
             throw new IllegalArgumentException("progressCallback is required");
         }
@@ -140,7 +140,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
         }
     }
 
-    public Application getApplication() {
+    public T getApplication() {
         return application;
     }
 

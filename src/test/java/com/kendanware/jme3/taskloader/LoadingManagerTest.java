@@ -61,7 +61,7 @@ public class LoadingManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void constructingLoadingManagershouldThrowIllegalArgumentException_whenProgressCallbackIsNull() {
-        new LoadingManager(application, null);
+        new LoadingManager<>(application, null);
     }
 
     private static class LoadingTaskWithoutAnnotation implements LoadingTask {

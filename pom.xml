@@ -4,7 +4,7 @@
 
     <groupId>com.kendanware.jme3</groupId>
     <artifactId>taskloader</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <url>https://github.com/Kendanware/jme3-taskloader</url>
 
     <scm>
@@ -95,7 +95,7 @@
             <plugin>
                 <groupId>external.atlassian.jgitflow</groupId>
                 <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>1.0-m4.3</version>
+                <version>1.0-m5.1</version>
                 <configuration>
                 </configuration>
             </plugin>

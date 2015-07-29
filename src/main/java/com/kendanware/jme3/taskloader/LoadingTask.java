@@ -7,8 +7,8 @@ import com.jme3.app.Application;
  * @since 2015-01-17
  */
 @FunctionalInterface
-public interface LoadingTask {
+public interface LoadingTask<T extends Application> {
 
-    void load(final Application application);
+    void load(final T t);
 
 }

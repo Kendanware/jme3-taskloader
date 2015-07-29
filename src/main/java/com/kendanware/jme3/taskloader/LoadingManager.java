@@ -18,11 +18,11 @@ import java.util.function.Consumer;
  * @author Daniel Johansson
  * @since 2015-01-17
  */
-public class LoadingManager implements Consumer<LoadingTask> {
+public class LoadingManager<T extends Application> implements Consumer<LoadingTask> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadingManager.class);
 
-    private final Application application;
+    private final T application;
     private final Queue<LoadingTask> loadingTasks = new ConcurrentLinkedQueue<>();
     private final int threads;
     private boolean loadingStarted = false;
@@ -33,6 +33,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
     private Queue<Class<? extends LoadingTask>> loadedTasks = new ConcurrentLinkedQueue<>();
     private final AtomicDouble totalProgress = new AtomicDouble();
     private double progressPerAsset;
+    private int tasksToLoad;
 
     /**
      * The LoadingManager is responsible for coordinating the loading work, starting threads and reporting back when loading
@@ -41,7 +42,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * @param application      the JME3 application class.
      * @param progressCallback a callback to call when loading progress changes.
      */
-    public LoadingManager(final Application application, final ProgressCallback progressCallback) {
+    public LoadingManager(final T application, final ProgressCallback progressCallback) {
         this(application, Runtime.getRuntime().availableProcessors(), progressCallback);
     }
 
@@ -53,7 +54,7 @@ public class LoadingManager implements Consumer<LoadingTask> {
      * @param numberOfThreads  number of threads to use for consuming the task queue.
      * @param progressCallback a callback to call when loading progress changes.
      */
-    public LoadingManager(final Application application, final int numberOfThreads, final ProgressCallback progressCallback) {
+    public LoadingManager(final T application, final int numberOfThreads, final ProgressCallback progressCallback) {
         if (progressCallback == null) {
             throw new IllegalArgumentException("progressCallback is required");
         }
@@ -126,25 +127,25 @@ public class LoadingManager implements Consumer<LoadingTask> {
         loadingStarted = true;
         loadingStartedAt = System.nanoTime();
 
-        LOGGER.debug("Running Loading Tasks");
-        progressPerAsset = 1.0f / loadingTasks.size();
+        tasksToLoad = loadingTasks.size();
+        progressPerAsset = 1.0f / tasksToLoad;
 
         // Fire up threads to load stuff
         for (int i = 0; i < threads; i++) {
             final LoaderThread loaderThread = new LoaderThread(this, this);
-            LOGGER.debug("Created LoaderThread {}/{}", i + 1, threads);
+            LOGGER.debug("Created LoaderThread {} of {}", i + 1, threads);
 
-            final Thread thread = new Thread(loaderThread);
+            final Thread thread = new Thread(loaderThread, "LoaderThread " + i);
             thread.start();
         }
     }
 
-    public Application getApplication() {
+    public T getApplication() {
         return application;
     }
 
     /**
-     * Returns the current progress as a value between 0.0 and 1.0 where 1.0 is max prgoress.
+     * Returns the current progress as a value between 0.0 and 1.0 where 1.0 is max progress.
      *
      * @return a value between 0.0 and 1.0
      */
@@ -193,8 +194,11 @@ public class LoadingManager implements Consumer<LoadingTask> {
     public void accept(final LoadingTask loadingTask) {
         // Add this loading task to the list of loaded tasks.
         loadedTasks.add(loadingTask.getClass());
+        LOGGER.debug("Added task {} to list of loaded tasks", loadingTask.getClass().getSimpleName());
 
-        if (loadingTasks.isEmpty() && progress > 0.98f && !loadingComplete) {
+        LOGGER.debug("Loaded tasks: {}, tasks to load: {}", loadedTasks.size(), tasksToLoad);
+
+        if (loadingTasks.isEmpty() && loadedTasks.size() == tasksToLoad && !loadingComplete) {
             loadingComplete = true;
             LOGGER.debug("Completed loading {} tasks in {} ms using {} threads", loadedTasks.size(), TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - loadingStartedAt), threads);
         }

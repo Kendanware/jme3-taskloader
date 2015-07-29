@@ -153,6 +153,16 @@ This should speak for itself.
         <url>http://oss.jfrog.org/artifactory/libs-release/</url>
     </repository>
 
+    <dependency>
+        <groupId>com.kendanware.jme3</groupId>
+        <artifactId>taskloader</artifactId>
+        <version>[0.2,)</version>
+    </dependency>
+```
+
+If you're brave you can try out the snapshots available here.
+
+```xml
     <repository>
         <id>oss-libs-snapshots</id>
         <url>http://oss.jfrog.org/artifactory/libs-snapshot/</url>
@@ -160,10 +170,4 @@ This should speak for itself.
             <enabled>true</enabled>
         </snapshots>
     </repository>
-
-    <dependency>
-        <groupId>com.kendanware.jme3</groupId>
-        <artifactId>taskloader</artifactId>
-        <version>${jme3taskloader.version}</version>
-    </dependency>
 ```

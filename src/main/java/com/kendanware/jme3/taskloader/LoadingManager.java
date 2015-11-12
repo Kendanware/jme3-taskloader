@@ -140,6 +140,11 @@ public class LoadingManager<T extends Application> implements Consumer<LoadingTa
         }
     }
 
+    /**
+     * Returns the application instance which was provided to the LoadingManager upon construction.
+     *
+     * @return the application instance
+     */
     public T getApplication() {
         return application;
     }
@@ -206,7 +211,7 @@ public class LoadingManager<T extends Application> implements Consumer<LoadingTa
         String message = "";
         final Description description = loadingTask.getClass().getAnnotation(Description.class);
 
-        if (description != null) {
+        if (description != null && description.value() != null) {
             message = description.value();
         }
 

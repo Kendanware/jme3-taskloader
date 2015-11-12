@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
+ * A LoadingThread is a worker thread which fetches loading tasks from the loading manager and then executes them one at
+ * a time. By the implied name, this runs in it's own thread and therefore there may be several of these running at the
+ * same time.
+ *
  * @author Daniel Johansson
  * @since 2015-01-17
  */

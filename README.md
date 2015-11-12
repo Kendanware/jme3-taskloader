@@ -156,7 +156,7 @@ This should speak for itself.
     <dependency>
         <groupId>com.kendanware.jme3</groupId>
         <artifactId>taskloader</artifactId>
-        <version>[0.2,)</version>
+        <version>[0.3,)</version>
     </dependency>
 ```
 

@@ -86,7 +86,7 @@ A loading task is defined as a small unit of isolated work that needs to be perf
 will be really short in lines of code. Perhaps it will load an asset like a model and setup a couple of extra attributes
 on it. Perhaps the task will load your game world. Perhaps it will initialise your post-process filters. The list goes on.
 
-Remember that the task loading is fully asynchronous, this means that loading tasks will executed on their own thread. Even
+Remember that the task loading is fully asynchronous, this means that loading tasks will be executed on their own thread. Even
 if you decide to only use one thread for loading the tasks they are still executed asynchronously to the main rendering
 thread in JME. In order to talk nicely to the rendering thread you will have to ensure that any code as described by
 the JME threading model document is executed through a Callable on the rendering thread. See
